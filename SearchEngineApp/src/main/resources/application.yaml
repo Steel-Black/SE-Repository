@@ -1,0 +1,21 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    username: postgres
+    password: 529220GT
+    url: jdbc:postgresql://localhost:5432/search_engine?useSSL=false&requireSSL=false&allowPublicKeyRetrieval=true
+    driver: org.postgresql.Driver
+    batch_size: 50
+    dialect: org.hibernate.dialect.PostgreSQLDialect
+    ddl-auto: update
+    show-sql: true
+
+indexing-settings:
+  sites:
+    - url: https://www.lutherancathedral.ru/
+      name: СоборСвятого.ру
+    - url: https://dombulgakova.ru/
+      name: ДомБулгакова.ру
+
+
