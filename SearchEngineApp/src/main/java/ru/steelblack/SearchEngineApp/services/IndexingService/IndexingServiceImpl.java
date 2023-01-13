@@ -3,6 +3,8 @@ package ru.steelblack.SearchEngineApp.services.IndexingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO.IndexingResponseError;
+import ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO.IndexingResponseOk;
 import ru.steelblack.SearchEngineApp.services.IndexingService.indexingPage.PageParser;
 import ru.steelblack.SearchEngineApp.models.*;
 import ru.steelblack.SearchEngineApp.packageDAO.hibernate.HibernateDAO;
@@ -35,7 +37,7 @@ public class IndexingServiceImpl implements StatisticService {
     private final IndexRepository indexRepository;
     private final SitesList sites;
     private final HibernateDAO hibernateDAO;
-    private boolean isIndexing;
+    private boolean isStarted;
 
     @Autowired
     public IndexingServiceImpl(LemmaRepository lemmaRepository, SiteRepository siteRepository, PageRepository pageRepository, JdbcTemplateDAO jdbcTemplateDAO, IndexRepository indexRepository, SitesList sites, HibernateDAO hibernateDAO) {
@@ -49,11 +51,22 @@ public class IndexingServiceImpl implements StatisticService {
         this.hibernateDAO = hibernateDAO;
     }
 
-    public IndexingResponse indexingSites() {
-        if (isIndexing){
-            throw new RepeatedRequestException("Индексация уже запущена");
+    public IndexingResponse getStartIndexing() {
+        List<Site> indexingSites = siteRepository.findAllByStatus(Status.INDEXING);
+
+        if (indexingSites.isEmpty() && !isStarted) {
+            isStarted = true;
+            new Thread(this::indexingSites).start();
+
+            return new IndexingResponseOk();
+        } else {
+
+//            throw new RepeatedRequestException("Индексация уже запущена");
+            return new IndexingResponseError(false,"Индексация уже запущена");
         }
-        isIndexing = true;
+    }
+
+    public void indexingSites(){
 
         List<Site> sitesList = new ArrayList<>(sites.getSites());
 
@@ -64,12 +77,12 @@ public class IndexingServiceImpl implements StatisticService {
         if (!PageParser.isTerminate()) {
             saveIndexingResults(sitesList, indexingResults);
             updateAllSites(sitesList, Status.INDEXED);
-            isIndexing = false;
+            isStarted = false;
             System.out.println("complete");
-            return new IndexingResponse(true);
+
         } else {
-            updateAllSites(sitesList, Status.FAILED);
-            isIndexing = false;
+            updateAllSites(sitesList,"Индексация прервана", Status.FAILED);
+            isStarted = false;
             throw new TerminateException("индексация прервана");
         }
     }
@@ -104,13 +117,13 @@ public class IndexingServiceImpl implements StatisticService {
     }
 
     @Override
-    public  IndexingResponse terminate(){
+    public  IndexingResponse terminate() throws RepeatedRequestException {
 
-        if (!isIndexing){
+        if (!isStarted){
             throw new RepeatedRequestException("Индексация не запущена");
         }
         PageParser.Terminate();
-        return new IndexingResponse(true);
+        return new IndexingResponseOk();
     }
 
     @Transactional
@@ -131,7 +144,14 @@ public class IndexingServiceImpl implements StatisticService {
 
     public void updateAllSites(List<Site> sitesList, Status status){
         for (Site site:sitesList){
-            hibernateDAO.saveSite(site, status);
+            hibernateDAO.updateSite(site, status);
+        }
+    }
+
+    public void updateAllSites(List<Site> sitesList, String lastError, Status status){
+        for (Site site:sitesList){
+            site.setLastError(lastError);
+            hibernateDAO.updateSite(site, status);
         }
     }
 
@@ -145,8 +165,8 @@ public class IndexingServiceImpl implements StatisticService {
             PageParser task =  new PageParser(site, site.getUrl());
             tasks.add(task);
             fjp.execute(task);
+            hibernateDAO.saveSite(site, Status.INDEXING);
         }
-        updateAllSites(sitesList, Status.INDEXING);
 
         for (PageParser task:tasks){
             taskResultList.add(task.join());
@@ -158,7 +178,7 @@ public class IndexingServiceImpl implements StatisticService {
 
     public Page getPage(String path){
         Optional<Page> op = pageRepository.findPageByPath(path);
-        Page page = null;
+        Page page;
         if (op.isPresent()){
             page = op.get();
         }

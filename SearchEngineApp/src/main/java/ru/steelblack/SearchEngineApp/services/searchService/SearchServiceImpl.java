@@ -2,6 +2,7 @@ package ru.steelblack.SearchEngineApp.services.searchService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.steelblack.SearchEngineApp.pageDTO.SearchDTO.ResponseDataError;
 import ru.steelblack.SearchEngineApp.services.IndexingService.indexingPage.LemmaFinder;
 import ru.steelblack.SearchEngineApp.models.*;
 import ru.steelblack.SearchEngineApp.pageDTO.SearchDTO.ResponseData;
@@ -39,10 +40,18 @@ public class SearchServiceImpl implements SearchService {
     public ResponseData searchPages(String query, String siteUrl) {
 
         if (query == null || query.isBlank()){
-            throw new BadRequestException("Задан пустой поисковый запрос");
+
+                throw new BadRequestException("Задан пустой поисковый запрос");
+
         }
 
+
+
         List<Site> sites = getSites(siteUrl);
+        System.out.println(sites.size());
+        if (sites.isEmpty()){
+            return new ResponseDataError(false,"В данный момент нет сайтов доступных для поиска");
+        }
 
         ResponseData responseData = new ResponseData();
 
@@ -69,25 +78,36 @@ public class SearchServiceImpl implements SearchService {
     }
 
     private List<Site> getSites(String siteUrl){
+
         List<Site> sites = new ArrayList<>();
         if (siteUrl != null){
-            Optional<Site> optionalSite = siteRepository.findByUrlAndAndStatus(siteUrl, Status.INDEXED);
-            if (optionalSite.isPresent()){
-                sites.add(optionalSite.get());
-            }
-            else {
-                throw new SiteNotFoundException("В данный момент сайт не дуступен для поиска");
-            }
+          Site optionalSite = siteRepository.findByUrlAndAndStatus(siteUrl, Status.INDEXED);
+          sites.add(optionalSite);
+//            if (optionalSite.isPresent()){
+//                sites.add(optionalSite.get());
+//            }
+//            else {
+//                try {
+//                    throw new SiteNotFoundException("В данный момент сайт не дуступен для поиска");
+//                } catch (SiteNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
         }
         else{
-            Optional<List<Site>> optionalSites = siteRepository.findByStatus(Status.INDEXED);
-            if (optionalSites.isPresent()){
-                sites.addAll(optionalSites.get());
-            }
-            else {
-                throw new SiteNotFoundException("В данный момент сайты не дуступены для поиска");
-            }
+            List<Site> optionalSites = siteRepository.findAllByStatus(Status.INDEXED);
+            sites.addAll(optionalSites);
+//            if (optionalSites.isPresent()){
+//                sites.addAll(optionalSites.get());
+//            }
+//            else {
+//                try {
+//                    throw new SiteNotFoundException("В данный момент сайты не дуступены для поиска");
+//                } catch (SiteNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//            }
         }
         return sites;
     }

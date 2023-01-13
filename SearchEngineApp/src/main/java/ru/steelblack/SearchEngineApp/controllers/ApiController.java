@@ -37,7 +37,7 @@ public class ApiController {
 
         System.out.println("startIndexingAllSites");
 
-        return new ResponseEntity<>(statisticsService.indexingSites(), HttpStatus.OK);
+        return new ResponseEntity<>(statisticsService.getStartIndexing(), HttpStatus.OK);
 
     }
 
@@ -51,7 +51,7 @@ public class ApiController {
 
     @PostMapping("/indexPage")
     public ResponseEntity<IndexingResponse> indexPage(@RequestParam String url){
-        System.out.println("startIndexingOneSite");
+        System.out.println("startIndexingOnePage");
          return  new ResponseEntity<>(statisticsService.indexingPage(url), HttpStatus.OK);
     }
 

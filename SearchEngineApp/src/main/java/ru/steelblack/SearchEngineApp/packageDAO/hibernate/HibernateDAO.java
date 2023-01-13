@@ -4,6 +4,7 @@ package ru.steelblack.SearchEngineApp.packageDAO.hibernate;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.steelblack.SearchEngineApp.models.*;
 
@@ -22,10 +23,22 @@ public class HibernateDAO {
     }
 
     public void saveSite(Site site, Status status){
+
         Session session = entityManager.unwrap(Session.class);
         site.setStatus(status);
         site.setStatusTime(new Date());
         session.save(site);
         session.close();
+
+    }
+
+    public void updateSite(Site site, Status status){
+
+        Session session = entityManager.unwrap(Session.class);
+        site.setStatus(status);
+        site.setStatusTime(new Date());
+        session.update(site);
+        session.close();
+
     }
 }

@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 
 public class PageParser extends RecursiveTask <List<Index>> {
 
-    private volatile static Set<String> urlSet = new HashSet<>();
+    private static Set<String> urlSet = new HashSet<>();
     private List<Index> indexList = new ArrayList<>();
-    private static volatile boolean isTerminate;
+    private static boolean isTerminate;
     private Site site;
     private String url;
 
@@ -38,9 +38,9 @@ public class PageParser extends RecursiveTask <List<Index>> {
         }
 
         if (!isTerminate) {
-            site.setStatus(Status.INDEXING);
-            site.setLastError(null);
-            site.setStatusTime(new Date());
+//            site.setStatus(Status.INDEXING);
+//            site.setLastError(null);
+//            site.setStatusTime(new Date());
 
             Connection connection = getConnection(url);
 
@@ -58,11 +58,11 @@ public class PageParser extends RecursiveTask <List<Index>> {
                 indexList.addAll(parser.join());
             }
         }
-        else {
-            site.setStatus(Status.FAILED);
-            site.setLastError("Остановка индексации");
-            site.setStatusTime(new Date());
-        }
+//        else {
+//            site.setStatus(Status.FAILED);
+//            site.setLastError("Остановка индексации");
+//            site.setStatusTime(new Date());
+//        }
 
         return indexList;
     }

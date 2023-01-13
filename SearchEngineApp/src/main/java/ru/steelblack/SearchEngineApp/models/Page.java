@@ -16,14 +16,6 @@ import java.util.List;
 public class Page implements Comparable {
 
     @Id
-//    @GenericGenerator(name = "page_id_generator", strategy = "sequence", parameters = {
-//            @org.hibernate.annotations.Parameter(name = "sequence_name", value = "page_id_seq"),
-//            @org.hibernate.annotations.Parameter(name = "allocated_size", value = "1"),
-//            @org.hibernate.annotations.Parameter(name = "increment_size", value = "50"),
-//            @org.hibernate.annotations.Parameter(name = "optimizer", value = "pooled-lo")
-//    })
-//    @SequenceGenerator(name = "page_seq", sequenceName = "page_sequence", initialValue = 1, allocationSize = 50)
-
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private int id;

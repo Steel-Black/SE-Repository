@@ -49,8 +49,9 @@ public class SpringConfig {
     private Properties hibernateProperties(){
         Properties properties = new Properties();
         properties.put("hibernate.dialect", dataBaseProperties.getDataSource().get("dialect"));
+//        properties.put("use_sql_comments", "true");
 //        properties.put("hibernate.show_sql", dataBaseProperties.getDataSource().get("show-sql"));
-        properties.put("hibernate.jdbc.batch_size", dataBaseProperties.getDataSource().get("batch_size"));
+//        properties.put("hibernate.jdbc.batch_size", dataBaseProperties.getDataSource().get("batch_size"));
         properties.put("hibernate.hbm2ddl.auto", dataBaseProperties.getDataSource().get("ddl-auto"));
         return properties;
     }
