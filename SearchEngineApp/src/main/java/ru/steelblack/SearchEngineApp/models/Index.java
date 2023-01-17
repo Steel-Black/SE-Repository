@@ -3,17 +3,15 @@ package ru.steelblack.SearchEngineApp.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
-import java.util.List;
+
 
 @Entity
 @Table(name = "index")
 @Getter
 @Setter
 @NoArgsConstructor
-
 public class Index {
 
     @Id

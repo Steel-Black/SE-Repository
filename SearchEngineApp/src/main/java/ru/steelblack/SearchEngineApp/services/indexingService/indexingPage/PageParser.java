@@ -1,4 +1,4 @@
-package ru.steelblack.SearchEngineApp.services.IndexingService.indexingPage;
+package ru.steelblack.SearchEngineApp.services.indexingService.indexingPage;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -38,9 +38,6 @@ public class PageParser extends RecursiveTask <List<Index>> {
         }
 
         if (!isTerminate) {
-//            site.setStatus(Status.INDEXING);
-//            site.setLastError(null);
-//            site.setStatusTime(new Date());
 
             Connection connection = getConnection(url);
 
@@ -58,11 +55,6 @@ public class PageParser extends RecursiveTask <List<Index>> {
                 indexList.addAll(parser.join());
             }
         }
-//        else {
-//            site.setStatus(Status.FAILED);
-//            site.setLastError("Остановка индексации");
-//            site.setStatusTime(new Date());
-//        }
 
         return indexList;
     }
@@ -160,8 +152,6 @@ public class PageParser extends RecursiveTask <List<Index>> {
         String html = doc.html();
         int code = connection.response().statusCode();
         urlSet.add(url);
-//        String[] split = url.split("/",4);
-//        String path = split[3];
         Page page = new Page(url, code, html);
         site.addPage(page);
         return page;

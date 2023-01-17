@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <File name="IndexingLog" fileName="logs/indexing.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+<!--            <LevelRangeFilter minLevel="Fatal" maxLevel="Fatal" onMatch="ACCEPT" onMismatch="DENY"/>-->
+        </File>
+        <File name="SearchingLog" fileName="logs/searching.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+<!--            <LevelRangeFilter minLevel="Fatal" maxLevel="Fatal" onMatch="ACCEPT" onMismatch="DENY"/>-->
+        </File>
+    </appenders>
+    <loggers>
+        <Logger name="ru.steelblack.SearchEngineApp.services.searchService" level="info" additivity="false">
+            <appender-ref ref="SearchingLog" level="info"/>
+        </Logger>
+        <Logger name="ru.steelblack.SearchEngineApp.services.indexingService" level="info" additivity="false">
+            <appender-ref ref="IndexingLog" level="info"/>
+        </Logger>
+
+        <Root level="debug" additivity="false">
+            <appender-ref ref="Console" level="info"/>
+        </Root>
+    </loggers>
+
+
+</configuration>

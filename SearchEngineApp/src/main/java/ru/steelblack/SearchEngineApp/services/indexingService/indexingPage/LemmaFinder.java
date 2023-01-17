@@ -1,4 +1,4 @@
-package ru.steelblack.SearchEngineApp.services.IndexingService.indexingPage;
+package ru.steelblack.SearchEngineApp.services.indexingService.indexingPage;
 
 import org.apache.lucene.morphology.LuceneMorphology;
 import org.apache.lucene.morphology.russian.RussianLuceneMorphology;
@@ -10,16 +10,9 @@ public class LemmaFinder {
     private static final String WORD_TYPE_REGEX = "\\W\\w&&[^а-яА-Я\\s]";
     private static final String[] particlesNames = new String[]{"МЕЖД", "ПРЕДЛ", "СОЮЗ"};
     private LuceneMorphology luceneMorphology;
-    //    ConcurrentHashMap <String, Integer> lemmasMap = new ConcurrentHashMap<>();
-//    private static HashMap<String, Integer> lemmasMap = new HashMap<>();
-//    private static Set<String> lemmaSet = new HashSet<>();
 
     private LemmaFinder(LuceneMorphology luceneMorphology) {
         this.luceneMorphology = luceneMorphology;
-    }
-
-    private LemmaFinder() {
-        throw new RuntimeException("Disallow construct");
     }
 
     public static LemmaFinder getInstance() {
@@ -32,9 +25,6 @@ public class LemmaFinder {
         return new LemmaFinder(morphology);
     }
 
-//    public HashMap<String, Integer> getLemmas() {
-//        return lemmasMap;
-//    }
 
     /**
      * Метод разделяет текст на слова, находит все леммы и считает их количество.

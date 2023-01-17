@@ -4,10 +4,8 @@ package ru.steelblack.SearchEngineApp.packageDAO.hibernate;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.steelblack.SearchEngineApp.models.*;
-
 import javax.persistence.EntityManager;
 import java.util.Date;
 import java.util.List;
@@ -41,4 +39,5 @@ public class HibernateDAO {
         session.close();
 
     }
+
 }

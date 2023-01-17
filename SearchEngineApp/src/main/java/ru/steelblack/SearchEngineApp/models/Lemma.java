@@ -50,6 +50,9 @@ public class Lemma implements Comparable {
         if (this.pages == null) {
             this.pages = new ArrayList<>();
         }
+        if (!pages.isEmpty()){
+            return pages;
+        }
         for (Index index:indexList){
             pages.add(index.getPage());
         }

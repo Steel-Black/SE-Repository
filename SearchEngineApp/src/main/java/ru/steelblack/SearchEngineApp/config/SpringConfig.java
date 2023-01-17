@@ -1,7 +1,6 @@
 package ru.steelblack.SearchEngineApp.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +13,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
-import org.thymeleaf.spring5.SpringTemplateEngine;
-import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
-import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -49,9 +45,6 @@ public class SpringConfig {
     private Properties hibernateProperties(){
         Properties properties = new Properties();
         properties.put("hibernate.dialect", dataBaseProperties.getDataSource().get("dialect"));
-//        properties.put("use_sql_comments", "true");
-//        properties.put("hibernate.show_sql", dataBaseProperties.getDataSource().get("show-sql"));
-//        properties.put("hibernate.jdbc.batch_size", dataBaseProperties.getDataSource().get("batch_size"));
         properties.put("hibernate.hbm2ddl.auto", dataBaseProperties.getDataSource().get("ddl-auto"));
         return properties;
     }

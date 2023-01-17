@@ -1,11 +1,12 @@
-package ru.steelblack.SearchEngineApp.services.IndexingService;
+package ru.steelblack.SearchEngineApp.services.indexingService;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO.IndexingResponseError;
 import ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO.IndexingResponseOk;
-import ru.steelblack.SearchEngineApp.services.IndexingService.indexingPage.PageParser;
+import ru.steelblack.SearchEngineApp.services.indexingService.indexingPage.PageParser;
 import ru.steelblack.SearchEngineApp.models.*;
 import ru.steelblack.SearchEngineApp.packageDAO.hibernate.HibernateDAO;
 import ru.steelblack.SearchEngineApp.packageDAO.jdbcTemplate.JdbcTemplateDAO;
@@ -19,15 +20,13 @@ import ru.steelblack.SearchEngineApp.repositories.IndexRepository;
 import ru.steelblack.SearchEngineApp.repositories.LemmaRepository;
 import ru.steelblack.SearchEngineApp.repositories.PageRepository;
 import ru.steelblack.SearchEngineApp.repositories.SiteRepository;
-import ru.steelblack.SearchEngineApp.util.SearchEngineException.PageNotFoundException;
-import ru.steelblack.SearchEngineApp.util.SearchEngineException.RepeatedRequestException;
-import ru.steelblack.SearchEngineApp.util.SearchEngineException.TerminateException;
 
 import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 
 
 @Service
+@Log4j2
 public class IndexingServiceImpl implements StatisticService {
 
     private final LemmaRepository lemmaRepository;
@@ -47,11 +46,11 @@ public class IndexingServiceImpl implements StatisticService {
         this.jdbcTemplateDAO = jdbcTemplateDAO;
         this.indexRepository = indexRepository;
         this.sites = sites;
-
         this.hibernateDAO = hibernateDAO;
     }
 
-    public IndexingResponse getStartIndexing() {
+    public IndexingResponse getStartIndexingSites() {
+        log.info("Start indexing All sites");
         List<Site> indexingSites = siteRepository.findAllByStatus(Status.INDEXING);
 
         if (indexingSites.isEmpty() && !isStarted) {
@@ -60,13 +59,24 @@ public class IndexingServiceImpl implements StatisticService {
 
             return new IndexingResponseOk();
         } else {
-
-//            throw new RepeatedRequestException("Индексация уже запущена");
-            return new IndexingResponseError(false,"Индексация уже запущена");
+            return new IndexingResponseError(false, "Индексация уже запущена");
         }
     }
 
-    public void indexingSites(){
+    @Override
+    public IndexingResponse getStartIndexingPage(String path) {
+        Page page = pageRepository.findAllByPath(path);
+
+        if (page == null) {
+            return new IndexingResponseError(false, "Данная страница находится за пределами сайтов, указанных в конфигурационном файле.");
+        }
+//        indexingPage(path);
+        new Thread(() -> indexingPage(path)).start();
+
+        return new IndexingResponseOk();
+    }
+
+    public void indexingSites() {
 
         List<Site> sitesList = new ArrayList<>(sites.getSites());
 
@@ -78,18 +88,17 @@ public class IndexingServiceImpl implements StatisticService {
             saveIndexingResults(sitesList, indexingResults);
             updateAllSites(sitesList, Status.INDEXED);
             isStarted = false;
-            System.out.println("complete");
+            log.info("indexing sites complete");
 
         } else {
-            updateAllSites(sitesList,"Индексация прервана", Status.FAILED);
+            updateAllSites(sitesList, "Индексация прервана", Status.FAILED);
             isStarted = false;
-            throw new TerminateException("индексация прервана");
         }
     }
 
-    public  IndexingResponse indexingPage(String url){
-
-        Page page = getPage(url);
+    public void indexingPage(String path) {
+        log.info("Start indexing Page with path: " + path);
+        Page page = pageRepository.findAllByPath(path);
 
         List<Lemma> lemmas = page.getLemmas();
 
@@ -110,87 +119,70 @@ public class IndexingServiceImpl implements StatisticService {
         lemmaRepository.saveAll(updatedPage.getLemmas());
 
         jdbcTemplateDAO.indexBatchInsert(indexList);
-
-        System.out.println("complete");
-
-        return new IndexingResponse(true);
+        log.info("page indexing complete");
     }
 
     @Override
-    public  IndexingResponse terminate() throws RepeatedRequestException {
-
-        if (!isStarted){
-            throw new RepeatedRequestException("Индексация не запущена");
+    public IndexingResponse terminate() {
+        if (!isStarted) {
+            return new IndexingResponseError(false, "Индексация не запущена");
         }
         PageParser.Terminate();
         return new IndexingResponseOk();
     }
 
     @Transactional
-    public void savePagesAndLemmas(Site site){
+    public void savePagesAndLemmas(Site site) {
         pageRepository.saveAll(site.getPageList());
         lemmaRepository.saveAll(site.getLemmasList());
     }
 
-    public void saveIndexingResults(List<Site> sites ,List<List<Index>> tasksResult){
-        for (Site site: sites){
+    public void saveIndexingResults(List<Site> sites, List<List<Index>> tasksResult) {
+        for (Site site : sites) {
             savePagesAndLemmas(site);
         }
-        for (List<Index> indexList: tasksResult){
+        for (List<Index> indexList : tasksResult) {
             jdbcTemplateDAO.indexBatchInsert(indexList);
         }
     }
 
 
-    public void updateAllSites(List<Site> sitesList, Status status){
-        for (Site site:sitesList){
+    public void updateAllSites(List<Site> sitesList, Status status) {
+        for (Site site : sitesList) {
             hibernateDAO.updateSite(site, status);
         }
     }
 
-    public void updateAllSites(List<Site> sitesList, String lastError, Status status){
-        for (Site site:sitesList){
+    public void updateAllSites(List<Site> sitesList, String lastError, Status status) {
+        for (Site site : sitesList) {
             site.setLastError(lastError);
             hibernateDAO.updateSite(site, status);
         }
     }
 
-    private  List<List<Index>> getIndexingResult(List<Site> sitesList){
+    private List<List<Index>> getIndexingResult(List<Site> sitesList) {
         List<PageParser> tasks = new ArrayList<>();
         List<List<Index>> taskResultList = new ArrayList<>();
 
-        for (Site site:sitesList){
+        for (Site site : sitesList) {
 
             ForkJoinPool fjp = new ForkJoinPool();
-            PageParser task =  new PageParser(site, site.getUrl());
+            PageParser task = new PageParser(site, site.getUrl());
             tasks.add(task);
             fjp.execute(task);
             hibernateDAO.saveSite(site, Status.INDEXING);
         }
 
-        for (PageParser task:tasks){
+        for (PageParser task : tasks) {
             taskResultList.add(task.join());
         }
 
         return taskResultList;
     }
 
-
-    public Page getPage(String path){
-        Optional<Page> op = pageRepository.findPageByPath(path);
-        Page page;
-        if (op.isPresent()){
-            page = op.get();
-        }
-        else{
-            throw new PageNotFoundException("Данная страница находится за пределами сайтов, указанных в конфигурационном файле.");
-        }
-        return page;
-    }
-
     @Override
     public StatisticsResponse getStatistics() {
-        List<Site> sites = siteRepository.findAll();
+        List<Site> sites = siteRepository.findAllByStatus(Status.INDEXED);
 
         TotalStatistics total = new TotalStatistics();
         total.setSites(sites.size());

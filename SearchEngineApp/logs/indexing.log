@@ -1,0 +1,6 @@
+2023-01-17 17:57:07.013 [http-nio-8080-exec-1] INFO  ru.steelblack.SearchEngineApp.services.indexingService.IndexingServiceImpl - Start indexing Page with path: https://www.lutherancathedral.ru/
+2023-01-17 17:57:09.015 [http-nio-8080-exec-1] INFO  ru.steelblack.SearchEngineApp.services.indexingService.IndexingServiceImpl - page indexing complete
+
+2023-01-17 18:28:48.674 [http-nio-8080-exec-6] INFO  ru.steelblack.SearchEngineApp.services.indexingService.IndexingServiceImpl - Start indexing All sites
+2023-01-17 18:29:18.022 [Thread-1] INFO  ru.steelblack.SearchEngineApp.services.indexingService.IndexingServiceImpl - indexing sites complete
+2023-01-17 18:31:31.813 [Thread-1] INFO  ru.steelblack.SearchEngineApp.services.indexingService.IndexingServiceImpl - Start indexing Page with path: https://www.lutherancathedral.ru/

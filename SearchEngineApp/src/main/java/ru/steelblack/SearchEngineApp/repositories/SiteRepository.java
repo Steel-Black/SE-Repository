@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Transactional
 public interface SiteRepository extends JpaRepository<Site, Integer> {
-//    Optional<List<Site>> findByStatus(Status status);
 
     Site findByUrlAndAndStatus(String url, Status status);
 

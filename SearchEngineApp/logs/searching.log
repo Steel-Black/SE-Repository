@@ -1,0 +1,3 @@
+
+2023-01-17 18:22:16.624 [http-nio-8080-exec-2] INFO  ru.steelblack.SearchEngineApp.services.searchService.SearchServiceImpl - Начало поиска
+2023-01-17 18:22:17.583 [http-nio-8080-exec-2] INFO  ru.steelblack.SearchEngineApp.services.searchService.SearchServiceImpl - Конец поиска

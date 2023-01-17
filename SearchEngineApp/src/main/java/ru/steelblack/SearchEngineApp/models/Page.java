@@ -38,8 +38,7 @@ public class Page implements Comparable {
     @JoinColumn(name = "site_id")
     private Site site;
 
-    @OneToMany(mappedBy = "page", cascade = CascadeType.REMOVE)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
+    @OneToMany(mappedBy = "page", fetch = FetchType.LAZY)
     private List<Index> indexList;
 
     public Page() {
@@ -54,6 +53,9 @@ public class Page implements Comparable {
     public List<Lemma> getLemmas(){
         if (lemmas == null){
             lemmas = new ArrayList<>();
+        }
+        if (!lemmas.isEmpty()){
+            return lemmas;
         }
         for (Index index:indexList){
             lemmas.add(index.getLemma());

@@ -1,15 +1,14 @@
-package ru.steelblack.SearchEngineApp.services.IndexingService;
+package ru.steelblack.SearchEngineApp.services.indexingService;
 
 import ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO.IndexingResponse;
 import ru.steelblack.SearchEngineApp.pageDTO.statictics.StatisticsResponse;
-import ru.steelblack.SearchEngineApp.util.SearchEngineException.RepeatedRequestException;
 
 public interface StatisticService {
     StatisticsResponse getStatistics();
 
-    IndexingResponse getStartIndexing();
+    IndexingResponse getStartIndexingSites();
 
-    IndexingResponse indexingPage(String url);
+    IndexingResponse getStartIndexingPage(String url);
 
     IndexingResponse terminate();
 

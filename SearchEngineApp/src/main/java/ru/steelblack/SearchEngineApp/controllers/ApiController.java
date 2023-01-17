@@ -8,9 +8,7 @@ import ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO.IndexingResponse;
 import ru.steelblack.SearchEngineApp.pageDTO.SearchDTO.ResponseData;
 import ru.steelblack.SearchEngineApp.pageDTO.statictics.StatisticsResponse;
 import ru.steelblack.SearchEngineApp.services.searchService.SearchService;
-import ru.steelblack.SearchEngineApp.services.IndexingService.StatisticService;
-import ru.steelblack.SearchEngineApp.util.ExceptionResponse;
-import ru.steelblack.SearchEngineApp.util.SearchEngineException.*;
+import ru.steelblack.SearchEngineApp.services.indexingService.StatisticService;
 
 @RestController
 @RequestMapping("/api")
@@ -35,15 +33,13 @@ public class ApiController {
     @GetMapping("/startIndexing")
     public  ResponseEntity<IndexingResponse> startIndexing() {
 
-        System.out.println("startIndexingAllSites");
-
-        return new ResponseEntity<>(statisticsService.getStartIndexing(), HttpStatus.OK);
+        return new ResponseEntity<>(statisticsService.getStartIndexingSites(), HttpStatus.OK);
 
     }
 
     @GetMapping("/stopIndexing")
     public  ResponseEntity<IndexingResponse> stopIndexing() {
-        System.out.println("stopIndexing");
+
         return new ResponseEntity<>(statisticsService.terminate(), HttpStatus.OK);
     }
 
@@ -51,37 +47,13 @@ public class ApiController {
 
     @PostMapping("/indexPage")
     public ResponseEntity<IndexingResponse> indexPage(@RequestParam String url){
-        System.out.println("startIndexingOnePage");
-         return  new ResponseEntity<>(statisticsService.indexingPage(url), HttpStatus.OK);
+
+        return  new ResponseEntity<>(statisticsService.getStartIndexingPage(url), HttpStatus.OK);
     }
 
     @GetMapping("/statistics")
     public ResponseEntity<StatisticsResponse> statistics() {
         return ResponseEntity.ok(statisticsService.getStatistics());
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<ExceptionResponse> myException(SearchEngineException e){
-
-        ExceptionResponse response = new ExceptionResponse();
-        response.setError(e.getMessage());
-        ResponseEntity<ExceptionResponse> responseEntity = null;
-        if (e.getClass() == PageNotFoundException.class){
-            responseEntity = new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
-        if (e.getClass() == RepeatedRequestException.class){
-            responseEntity = new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
-        }
-        if (e.getClass() == TerminateException.class){
-            responseEntity = new ResponseEntity<>(response, HttpStatus.LOCKED);
-        }
-        if (e.getClass() == BadRequestException.class){
-            responseEntity = new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
-        if (e.getClass() == SiteNotFoundException.class){
-            responseEntity = new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
-        }
-        return responseEntity;
     }
 
 }
