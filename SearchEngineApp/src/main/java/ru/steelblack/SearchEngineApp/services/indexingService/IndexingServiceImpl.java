@@ -59,6 +59,7 @@ public class IndexingServiceImpl implements StatisticService {
 
             return new IndexingResponseOk();
         } else {
+            log.info("Индексация уже запущена");
             return new IndexingResponseError(false, "Индексация уже запущена");
         }
     }
@@ -68,10 +69,11 @@ public class IndexingServiceImpl implements StatisticService {
         Page page = pageRepository.findAllByPath(path);
 
         if (page == null) {
+            log.info("Cтраница " + path + " находится за пределами сайтов, указанных в конфигурационном файле.");
             return new IndexingResponseError(false, "Данная страница находится за пределами сайтов, указанных в конфигурационном файле.");
         }
-//        indexingPage(path);
-        new Thread(() -> indexingPage(path)).start();
+        log.info("Start indexing Page with path: " + path);
+        indexingPage(page);
 
         return new IndexingResponseOk();
     }
@@ -91,14 +93,13 @@ public class IndexingServiceImpl implements StatisticService {
             log.info("indexing sites complete");
 
         } else {
+            log.info("Индексация прервана");
             updateAllSites(sitesList, "Индексация прервана", Status.FAILED);
             isStarted = false;
         }
     }
 
-    public void indexingPage(String path) {
-        log.info("Start indexing Page with path: " + path);
-        Page page = pageRepository.findAllByPath(path);
+    public void indexingPage(Page page) {
 
         List<Lemma> lemmas = page.getLemmas();
 
@@ -125,6 +126,7 @@ public class IndexingServiceImpl implements StatisticService {
     @Override
     public IndexingResponse terminate() {
         if (!isStarted) {
+            log.info("Индексация не запущена");
             return new IndexingResponseError(false, "Индексация не запущена");
         }
         PageParser.Terminate();
