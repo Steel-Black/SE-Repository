@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.steelblack.SearchEngineApp.models.*;
 import javax.persistence.EntityManager;
 import java.util.Date;
-import java.util.List;
 
 @Component
 @Transactional

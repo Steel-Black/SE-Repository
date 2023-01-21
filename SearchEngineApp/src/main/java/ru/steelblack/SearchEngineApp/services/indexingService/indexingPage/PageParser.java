@@ -181,7 +181,7 @@ public class PageParser extends RecursiveTask <List<Index>> {
     }
 
 
-    public static void Terminate() {
+    public static void terminate() {
         isTerminate = true;
     }
 

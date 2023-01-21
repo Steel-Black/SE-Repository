@@ -3,7 +3,6 @@ package ru.steelblack.SearchEngineApp.services.indexingService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO.IndexingResponseError;
 import ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO.IndexingResponseOk;
 import ru.steelblack.SearchEngineApp.services.indexingService.indexingPage.PageParser;
@@ -129,11 +128,11 @@ public class IndexingServiceImpl implements StatisticService {
             log.info("Индексация не запущена");
             return new IndexingResponseError(false, "Индексация не запущена");
         }
-        PageParser.Terminate();
+        PageParser.terminate();
         return new IndexingResponseOk();
     }
 
-    @Transactional
+
     public void savePagesAndLemmas(Site site) {
         pageRepository.saveAll(site.getPageList());
         lemmaRepository.saveAll(site.getLemmasList());

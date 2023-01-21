@@ -27,7 +27,6 @@ public class JdbcTemplateDAO {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 Index index = indexList.get(i);
-
                 ps.setInt(1, index.getPage().getId());
                 ps.setInt(2, index.getLemma().getId());
                 ps.setFloat(3, index.getRank());

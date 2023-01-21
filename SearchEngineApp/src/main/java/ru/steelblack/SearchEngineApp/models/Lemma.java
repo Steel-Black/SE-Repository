@@ -2,10 +2,6 @@ package ru.steelblack.SearchEngineApp.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Synchronized;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Synchronize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
