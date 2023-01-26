@@ -166,7 +166,6 @@ public class IndexingServiceImpl implements StatisticService {
         List<List<Index>> taskResultList = new ArrayList<>();
 
         for (Site site : sitesList) {
-
             ForkJoinPool fjp = new ForkJoinPool();
             PageParser task = new PageParser(site, site.getUrl());
             tasks.add(task);
@@ -183,7 +182,7 @@ public class IndexingServiceImpl implements StatisticService {
 
     @Override
     public StatisticsResponse getStatistics() {
-        List<Site> sites = siteRepository.findAllByStatus(Status.INDEXED);
+        List<Site> sites = siteRepository.findAll();
 
         TotalStatistics total = new TotalStatistics();
         total.setSites(sites.size());

@@ -27,6 +27,7 @@ public class SearchServiceImpl implements SearchService {
     private final SiteRepository siteRepository;
     private final PageRepository pageRepository;
     private final IndexRepository indexRepository;
+    private static final int LIMIT_FREQUENCY = 50;
 
 
     @Autowired
@@ -39,7 +40,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public ResponseData searchPages(String query, String siteUrl) {
-        log.info("Начало поиска");
+        log.info("Начало поиска: " + query);
         if (query == null || query.isBlank()) {
             log.info("Задан пустой поисковый запрос");
             return new ResponseDataError(false, "Задан пустой поисковый запрос");
@@ -60,6 +61,7 @@ public class SearchServiceImpl implements SearchService {
 
         for (Site site : sites) {
             List<Lemma> lemmas = lemmaRepositories.findLemmaBySiteIdAndNameIn(site.getId(), List.copyOf(lemmasNamesSet));
+
             if (lemmas.size() == lemmasNamesSet.size()) {
                 List<Page> pages = getPagesWhereAllLemmasMeet(lemmas);
                 if (pages.isEmpty()) {
@@ -72,7 +74,7 @@ public class SearchServiceImpl implements SearchService {
                 responseData.setResult(true);
             }
         }
-        log.info("Конец поиска");
+        log.info("Найдено: " + responseData.getCount() + " результатов");
         return responseData;
     }
 
@@ -90,9 +92,9 @@ public class SearchServiceImpl implements SearchService {
     }
 
     private List<Page> getPagesWhereAllLemmasMeet(List<Lemma> lemmas) {
-        int limitFrequency = 30;
+
         lemmas = lemmas.stream()
-                .filter(lemma -> lemma.getFrequency() < limitFrequency)
+                .filter(lemma -> lemma.getFrequency() < LIMIT_FREQUENCY)
                 .sorted()
                 .collect(Collectors.toList());
         if (lemmas.isEmpty()) {
@@ -129,17 +131,21 @@ public class SearchServiceImpl implements SearchService {
         String html = page.getHtml();
         StringBuilder stringBuilder = new StringBuilder();
         for (String lemma : lemmasSet) {
-            stringBuilder.append("(").append(lemma).append(")|");
+            stringBuilder.append(lemma).append("|");
         }
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 
-        String regex = "([А-Я])([А-я\\s,\\-]*)" + stringBuilder + "([А-я\\s,\\-]*)\\.";
+        String regex = "([А-Я])([А-я\\s,\\-()0-9\"»«:]*)" + "(" + stringBuilder + ")" + "([А-я\\s,\\-()0-9\"»«:]*)\\.";
 
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(html);
 
         if (matcher.find()) {
-            return matcher.group();
+            String snippet = matcher.group();
+            for (String lemma: lemmasSet) {
+                snippet = snippet.replaceAll(lemma, "<b>" + lemma + "</b>");
+            }
+            return snippet;
         }
         return "";
     }
