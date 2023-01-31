@@ -74,6 +74,9 @@ public class SearchServiceImpl implements SearchService {
                 responseData.setResult(true);
             }
         }
+        if (responseData.getCount() == 0){
+            return new ResponseDataError(false,"По вашему запросу ничего не найдено :(");
+        }
         log.info("Найдено: " + responseData.getCount() + " результатов");
         return responseData;
     }
