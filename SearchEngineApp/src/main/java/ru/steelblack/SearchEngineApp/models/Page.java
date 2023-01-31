@@ -1,6 +1,7 @@
 package ru.steelblack.SearchEngineApp.models;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.List;
 @Table(name = "page")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Page implements Comparable {
 
     @Id
@@ -38,9 +40,6 @@ public class Page implements Comparable {
 
     @OneToMany(mappedBy = "page", fetch = FetchType.LAZY)
     private List<Index> indexList;
-
-    public Page() {
-    }
 
     public Page(String path, int code, String html) {
         this.path = path;

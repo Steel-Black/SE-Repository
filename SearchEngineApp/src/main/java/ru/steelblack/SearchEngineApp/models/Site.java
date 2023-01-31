@@ -1,6 +1,7 @@
 package ru.steelblack.SearchEngineApp.models;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @Table(name = "site")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Site {
 
     @Id
@@ -42,9 +44,6 @@ public class Site {
 
     @OneToMany(mappedBy = "site", cascade = CascadeType.REMOVE)
     private List<Lemma> lemmasList = new ArrayList<>();
-
-    public Site() {
-    }
 
     public Site(Status status, Date statusTime, String lastError, String url, String name) {
         this.status = status;
