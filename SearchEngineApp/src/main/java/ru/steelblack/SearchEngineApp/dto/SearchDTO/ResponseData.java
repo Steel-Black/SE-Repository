@@ -1,4 +1,4 @@
-package ru.steelblack.SearchEngineApp.pageDTO.SearchDTO;
+package ru.steelblack.SearchEngineApp.dto.SearchDTO;
 
 import java.util.ArrayList;
 import java.util.List;

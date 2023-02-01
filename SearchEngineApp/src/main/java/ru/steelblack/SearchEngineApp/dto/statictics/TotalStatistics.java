@@ -1,4 +1,4 @@
-package ru.steelblack.SearchEngineApp.pageDTO.statictics;
+package ru.steelblack.SearchEngineApp.dto.statictics;
 
 import lombok.Data;
 

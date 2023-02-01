@@ -1,4 +1,4 @@
-package ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO;
+package ru.steelblack.SearchEngineApp.dto.IndexingDTO;
 
 import lombok.Data;
 

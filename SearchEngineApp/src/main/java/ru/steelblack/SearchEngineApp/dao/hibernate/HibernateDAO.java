@@ -1,4 +1,4 @@
-package ru.steelblack.SearchEngineApp.packageDAO.hibernate;
+package ru.steelblack.SearchEngineApp.dao.hibernate;
 
 
 import org.hibernate.Session;

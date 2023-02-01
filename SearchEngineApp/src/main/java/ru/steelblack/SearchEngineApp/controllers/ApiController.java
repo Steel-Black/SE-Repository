@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO.IndexingResponse;
-import ru.steelblack.SearchEngineApp.pageDTO.SearchDTO.ResponseData;
-import ru.steelblack.SearchEngineApp.pageDTO.statictics.StatisticsResponse;
+import ru.steelblack.SearchEngineApp.dto.IndexingDTO.IndexingResponse;
+import ru.steelblack.SearchEngineApp.dto.SearchDTO.ResponseData;
+import ru.steelblack.SearchEngineApp.dto.statictics.StatisticsResponse;
 import ru.steelblack.SearchEngineApp.services.searchService.SearchService;
 import ru.steelblack.SearchEngineApp.services.indexingService.StatisticService;
 

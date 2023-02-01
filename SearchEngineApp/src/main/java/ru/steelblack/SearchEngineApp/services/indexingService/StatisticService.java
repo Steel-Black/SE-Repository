@@ -1,7 +1,7 @@
 package ru.steelblack.SearchEngineApp.services.indexingService;
 
-import ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO.IndexingResponse;
-import ru.steelblack.SearchEngineApp.pageDTO.statictics.StatisticsResponse;
+import ru.steelblack.SearchEngineApp.dto.IndexingDTO.IndexingResponse;
+import ru.steelblack.SearchEngineApp.dto.statictics.StatisticsResponse;
 
 public interface StatisticService {
     StatisticsResponse getStatistics();

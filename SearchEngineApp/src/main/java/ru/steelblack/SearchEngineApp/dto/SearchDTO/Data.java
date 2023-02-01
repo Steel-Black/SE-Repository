@@ -1,4 +1,4 @@
-package ru.steelblack.SearchEngineApp.pageDTO.SearchDTO;
+package ru.steelblack.SearchEngineApp.dto.SearchDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,7 @@ public class Data implements Comparable<Data> {
 
    private String siteName;
 
-   private String url;
+   private String uri;
 
    private String title;
 
@@ -23,7 +23,7 @@ public class Data implements Comparable<Data> {
 
    @Override
    public String toString() {
-      return  "url='" + url + ", title='" + title + ", snippet='" + snippet + ", relevance=" + relevance;
+      return  "url='" + uri + ", title='" + title + ", snippet='" + snippet + ", relevance=" + relevance;
    }
 
 

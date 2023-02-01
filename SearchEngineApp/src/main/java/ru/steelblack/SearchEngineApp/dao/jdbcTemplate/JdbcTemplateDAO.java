@@ -1,4 +1,4 @@
-package ru.steelblack.SearchEngineApp.packageDAO.jdbcTemplate;
+package ru.steelblack.SearchEngineApp.dao.jdbcTemplate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;

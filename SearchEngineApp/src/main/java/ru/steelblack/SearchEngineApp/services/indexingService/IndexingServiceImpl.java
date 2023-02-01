@@ -3,17 +3,17 @@ package ru.steelblack.SearchEngineApp.services.indexingService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO.IndexingResponseError;
-import ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO.IndexingResponseOk;
+import ru.steelblack.SearchEngineApp.dto.IndexingDTO.IndexingResponseError;
+import ru.steelblack.SearchEngineApp.dto.IndexingDTO.IndexingResponseOk;
 import ru.steelblack.SearchEngineApp.services.indexingService.indexingPage.PageParser;
 import ru.steelblack.SearchEngineApp.models.*;
-import ru.steelblack.SearchEngineApp.packageDAO.hibernate.HibernateDAO;
-import ru.steelblack.SearchEngineApp.packageDAO.jdbcTemplate.JdbcTemplateDAO;
-import ru.steelblack.SearchEngineApp.pageDTO.IndexingDTO.IndexingResponse;
-import ru.steelblack.SearchEngineApp.pageDTO.statictics.DetailedStatisticsItem;
-import ru.steelblack.SearchEngineApp.pageDTO.statictics.StatisticsData;
-import ru.steelblack.SearchEngineApp.pageDTO.statictics.StatisticsResponse;
-import ru.steelblack.SearchEngineApp.pageDTO.statictics.TotalStatistics;
+import ru.steelblack.SearchEngineApp.dao.hibernate.HibernateDAO;
+import ru.steelblack.SearchEngineApp.dao.jdbcTemplate.JdbcTemplateDAO;
+import ru.steelblack.SearchEngineApp.dto.IndexingDTO.IndexingResponse;
+import ru.steelblack.SearchEngineApp.dto.statictics.DetailedStatisticsItem;
+import ru.steelblack.SearchEngineApp.dto.statictics.StatisticsData;
+import ru.steelblack.SearchEngineApp.dto.statictics.StatisticsResponse;
+import ru.steelblack.SearchEngineApp.dto.statictics.TotalStatistics;
 import ru.steelblack.SearchEngineApp.config.SitesList;
 import ru.steelblack.SearchEngineApp.repositories.IndexRepository;
 import ru.steelblack.SearchEngineApp.repositories.LemmaRepository;
@@ -54,7 +54,7 @@ public class IndexingServiceImpl implements StatisticService {
 
         if (indexingSites.isEmpty() && !isStarted) {
             isStarted = true;
-            new Thread(this::indexingSites).start();
+            new Thread(this::indexedSites).start();
 
             return new IndexingResponseOk();
         } else {
@@ -72,12 +72,12 @@ public class IndexingServiceImpl implements StatisticService {
             return new IndexingResponseError(false, "Данная страница находится за пределами сайтов, указанных в конфигурационном файле.");
         }
         log.info("Start indexing Page with path: " + path);
-        indexingPage(page);
+        indexedPage(page);
 
         return new IndexingResponseOk();
     }
 
-    public void indexingSites() {
+    public void indexedSites() {
 
         List<Site> sitesList = new ArrayList<>(sites.getSites());
 
@@ -98,7 +98,7 @@ public class IndexingServiceImpl implements StatisticService {
         }
     }
 
-    public void indexingPage(Page page) {
+    public void indexedPage(Page page) {
 
         List<Lemma> lemmas = page.getLemmas();
 

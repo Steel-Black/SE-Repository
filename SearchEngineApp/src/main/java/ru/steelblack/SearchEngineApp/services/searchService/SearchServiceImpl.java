@@ -3,11 +3,11 @@ package ru.steelblack.SearchEngineApp.services.searchService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.steelblack.SearchEngineApp.pageDTO.SearchDTO.ResponseDataError;
+import ru.steelblack.SearchEngineApp.dto.SearchDTO.ResponseDataError;
 import ru.steelblack.SearchEngineApp.services.indexingService.indexingPage.LemmaFinder;
 import ru.steelblack.SearchEngineApp.models.*;
-import ru.steelblack.SearchEngineApp.pageDTO.SearchDTO.ResponseData;
-import ru.steelblack.SearchEngineApp.pageDTO.SearchDTO.Data;
+import ru.steelblack.SearchEngineApp.dto.SearchDTO.ResponseData;
+import ru.steelblack.SearchEngineApp.dto.SearchDTO.Data;
 import ru.steelblack.SearchEngineApp.repositories.IndexRepository;
 import ru.steelblack.SearchEngineApp.repositories.LemmaRepository;
 import ru.steelblack.SearchEngineApp.repositories.PageRepository;
@@ -163,7 +163,8 @@ public class SearchServiceImpl implements SearchService {
             String title = getTitle(page);
             String snippet = getSnippet(page, lemmasSet);
             float relevance = pageFloatHashMap.get(page) / maxValue;
-            data.add(new Data(site.getUrl(), site.getName(), page.getPath(), title, snippet, relevance));
+            String path = page.getPath().substring(site.getUrl().length());
+            data.add(new Data(site.getUrl(), site.getName(), path, title, snippet, relevance));
         }
 
         return data;
