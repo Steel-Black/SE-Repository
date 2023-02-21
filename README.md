@@ -1,8 +1,8 @@
 # SE-Repository
 
-# В проекте реализован поисковой движок для сайтов с использованием кирилицы. Сайты передаются в конфигурационном файле. 
+В проекте реализован поисковой движок для сайтов с использованием кирилицы. Сайты передаются в конфигурационном файле. 
 
-# Используемые технологии: Spring Boot, SpringDataJPA, Hibernate, JdbcTemplate, ForkJoinPool, Lombok, PostgreSQL, Thymeleaf
+Используемые технологии: Spring Boot, SpringDataJPA, Hibernate, JdbcTemplate, ForkJoinPool, Lombok, PostgreSQL, Thymeleaf
 
 # Инструкция: 
 - После запуска программы перейдите на http://localhost:8080/;
